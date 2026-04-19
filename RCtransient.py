@@ -3,10 +3,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import schemdraw
 import schemdraw.elements as elm
+import time
 
 # ================= PAGE CONFIG =================
-st.set_page_config(page_title="RC Circuit (Two Switches)", layout="wide")
-st.title("⚡ RC Circuit with Two Switches (Textbook Style)")
+st.set_page_config(page_title="Animated SPDT Switch", layout="wide")
+st.title("⚡ RC Circuit with Animated SPDT Switch")
 
 # ================= SIDEBAR =================
 st.sidebar.header("⚙️ Parameters")
@@ -15,110 +16,110 @@ V = st.sidebar.slider("Voltage (V)", 1.0, 50.0, 10.0)
 R = st.sidebar.slider("Resistance (Ω)", 1.0, 100.0, 10.0)
 C = st.sidebar.slider("Capacitance (F)", 0.01, 5.0, 1.0)
 
-st.sidebar.markdown("### 🔘 Switch Control")
-S1 = st.sidebar.toggle("S1 → Charging Switch", True)
-S2 = st.sidebar.toggle("S2 → Discharge Switch", False)
+mode = st.sidebar.radio("Mode", ["Charging", "Discharging"])
+animate = st.sidebar.button("▶ Animate Switch")
 
 # ================= CIRCUIT =================
-def rc_circuit(S1, S2):
+def draw_spdt(position):
     d = schemdraw.Drawing(unit=1.2)
 
-    # ---- TOP NODE ----
-    d += elm.Dot()
-    
-    # ---- LEFT BRANCH (Battery + S1) ----
-    d.push()
-    if S1:
-        d += elm.Switch().left().label("S1")
-        d += elm.SourceV().down().label("V")
-        d += elm.Line().right()
-    else:
-        d += elm.Gap().left().label("S1 Open")
-    d.pop()
-
-    # ---- RIGHT BRANCH (R-C) ----
+    # RC branch
     d += elm.Resistor().right().label("R")
     d += elm.Capacitor().down().label("C")
-
-    # ---- BOTTOM NODE ----
-    d += elm.Line().left()
-    
-    # ---- S2 (Discharge Switch) ----
-    if S2:
-        d += elm.Switch().left().label("S2")
-    else:
-        d += elm.Gap().label("S2 Open")
-
-    # ---- CLOSE LOOP ----
+    d += elm.Line().left(2)
     d += elm.Line().up()
+
+    # Common node
+    d += elm.Dot()
+
+    if position == "charging":
+        # Switch tilted to battery
+        d += elm.Switch(action='close').up().label("To V")
+        d += elm.SourceV().down().label("V")
+        d += elm.Line().left()
+        d += elm.Line().up()
+
+        # Other side open
+        d.push()
+        d += elm.Line().down(0.5)
+        d += elm.Switch(action='open').right()
+        d.pop()
+
+    elif position == "middle":
+        # Transition state (both open)
+        d += elm.Switch(action='open').up()
+        d.push()
+        d += elm.Line().down(0.5)
+        d += elm.Switch(action='open').right()
+        d.pop()
+
+    else:
+        # Switch tilted to loop
+        d += elm.Switch(action='close').down().label("To Loop")
+        d += elm.Line().right(1.5)
+        d += elm.Line().up(2)
+        d += elm.Line().left(2)
+
+        # Other side open
+        d.push()
+        d += elm.Line().right(0.5)
+        d += elm.Switch(action='open')
+        d.pop()
 
     return d
 
-# ================= CALCULATIONS =================
-tau = R * C
-t = np.linspace(0, 5 * tau, 500)
+# ================= GRAPH =================
+def plot_graph(mode):
+    tau = R * C
+    t = np.linspace(0, 5 * tau, 400)
 
-# Mode logic
-if S1 and not S2:
-    mode = "Charging"
-    Vc = V * (1 - np.exp(-t / tau))
+    if mode == "Charging":
+        Vc = V * (1 - np.exp(-t / tau))
+    else:
+        Vc = V * np.exp(-t / tau)
 
-elif S2 and not S1:
-    mode = "Discharging"
-    Vc = V * np.exp(-t / tau)
-
-elif S1 and S2:
-    mode = "⚠️ Invalid (Both Closed)"
-    Vc = np.zeros_like(t)
-
-else:
-    mode = "Open Circuit"
-    Vc = np.zeros_like(t)
-
-# ================= LAYOUT =================
-col1, col2 = st.columns([1, 1])
-
-# -------- CIRCUIT --------
-with col1:
-    st.subheader("🔌 Circuit Diagram")
-
-    d = rc_circuit(S1, S2)
-    d.draw()
-
-    fig = plt.gcf()
-    fig.set_size_inches(4.2, 3.2)
-    st.pyplot(fig)
-    plt.clf()
-
-    st.caption(f"Mode: {mode}")
-
-# -------- GRAPH --------
-with col2:
-    st.subheader("📉 Capacitor Voltage")
-
-    fig2, ax = plt.subplots()
+    fig, ax = plt.subplots()
     ax.plot(t, Vc, linewidth=2)
-
-    ax.set_xlabel("Time (t)")
+    ax.set_xlabel("Time")
     ax.set_ylabel("Vc")
     ax.set_title(mode)
     ax.grid(True)
-
     ax.set_xlim(left=0)
     ax.set_ylim(bottom=0)
 
-    st.pyplot(fig2)
+    return fig
 
-# ================= INFO =================
-st.markdown("---")
-st.markdown(f"""
-### ⚡ Operation
+# ================= PLACEHOLDERS =================
+col1, col2 = st.columns(2)
+circuit_placeholder = col1.empty()
+graph_placeholder = col2.empty()
 
-- **S1 ON, S2 OFF → Charging**
-- **S1 OFF, S2 ON → Discharging**
-- **Both OFF → Open circuit**
-- **Both ON → Invalid condition**
+# ================= STATIC DISPLAY =================
+position_map = {
+    "Charging": "charging",
+    "Discharging": "discharging"
+}
 
-### ⏱ Time Constant
-τ = R × C = **{tau:.2f} s**
-""")
+d = draw_spdt(position_map[mode])
+d.draw()
+fig = plt.gcf()
+fig.set_size_inches(4, 3)
+circuit_placeholder.pyplot(fig)
+plt.clf()
+
+graph_placeholder.pyplot(plot_graph(mode))
+
+# ================= ANIMATION =================
+if animate:
+    sequence = ["charging", "middle", "discharging"] if mode == "Discharging" else ["discharging", "middle", "charging"]
+
+    for pos in sequence:
+        d = draw_spdt(pos)
+        d.draw()
+        fig = plt.gcf()
+        fig.set_size_inches(4, 3)
+
+        circuit_placeholder.pyplot(fig)
+        plt.clf()
+
+        time.sleep(0.5)
