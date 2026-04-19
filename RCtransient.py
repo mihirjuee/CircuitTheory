@@ -21,7 +21,7 @@ animate = st.sidebar.button("▶ Animate Switch")
 
 # ================= CIRCUIT =================
 def draw_spdt(position):
-    d = schemdraw.Drawing(unit=1.2)
+    d = schemdraw.Drawing()
 
     # RC branch
     d += elm.Resistor().right().label("R")
