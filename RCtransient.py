@@ -26,7 +26,7 @@ def rc_circuit():
     d += elm.Capacitor().down().label("C")
 
     d += elm.Line().left()
-    d += elm.Line().up(2)
+    d += elm.Line().up(0.3)
 
     return d
 
