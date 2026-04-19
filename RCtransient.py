@@ -22,7 +22,7 @@ S2 = st.sidebar.toggle("S2 (Discharge Switch)", value=False)
 
 # ================= CIRCUIT =================
 def rc_circuit(S1, S2):
-    d = schemdraw.Drawing(unit=1.0)
+    d = schemdraw.Drawing()
 
     # Top line
     d += elm.Line().right(1)
