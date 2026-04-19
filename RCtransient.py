@@ -26,7 +26,7 @@ def draw_spdt(position):
     # RC branch
     d += elm.Resistor().right().label("R")
     d += elm.Capacitor().down().label("C")
-    d += elm.Line().left(2)
+    d += elm.Line().left()
     d += elm.Line().up()
 
     # Common node
