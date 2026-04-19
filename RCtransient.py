@@ -21,7 +21,7 @@ run = st.sidebar.button("▶ Run Simulation")
 
 # ================= CIRCUIT =================
 def draw_circuit(active_path="charge"):
-    d = schemdraw.Drawing(unit=1.2)
+    d = schemdraw.Drawing()
 
     # Battery
     d += elm.SourceV().up().label("V")
