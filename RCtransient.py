@@ -17,7 +17,7 @@ mode = st.sidebar.radio("Mode", ["Charging", "Discharging"])
 
 # ================= CIRCUIT =================
 def rc_circuit():
-    d = schemdraw.Drawing(unit=1.2)
+    d = schemdraw.Drawing()
 
     d += elm.SourceV().label("V")
 
