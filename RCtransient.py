@@ -137,5 +137,6 @@ if run:
 
         # Live voltage
         value_placeholder.metric("Capacitor Voltage", f"{vc:.2f} V")
+        value_placeholder.metric("Time Constant", f"{tau:.2f} s")
 
         time.sleep(0.05)
