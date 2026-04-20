@@ -32,9 +32,9 @@ def draw_circuit(active_path="charge"):
 
     # Switch
     if active_path == "charge":
-        sw = elm.Switch(action='close').right()
+        sw = elm.Switch(action='close').right().label("Close")
     else:
-        sw = elm.Switch(action='open').right()
+        sw = elm.Switch(action='open').right().label("Open")
 
     d += sw   # ✅ correct usage
 
@@ -53,7 +53,7 @@ def draw_circuit(active_path="charge"):
     if active_path == "discharge":
         d.pop()
         d += elm.Line().down(0.2)
-        d += elm.Switch(action='close').down()
+        d += elm.Switch(action='close').down().label("Close")
         d += elm.Line().down(1)
 
     return d
