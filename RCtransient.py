@@ -29,7 +29,7 @@ def draw_circuit(active_path="charge"):
     # Switch node
     d += elm.Line().right()
     d += elm.Dot()
-
+    d.push()
     if active_path == "charge":
         # Closed path to RC
         d += elm.Switch(action='close').right()
@@ -37,7 +37,7 @@ def draw_circuit(active_path="charge"):
         d += elm.Switch(action='open').right()
 
     # RC branch
-    d.push()
+    
     d += elm.Resistor().down().label("R")
     d += elm.Capacitor().down().label("C")
 
