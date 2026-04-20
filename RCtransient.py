@@ -13,19 +13,13 @@ st.markdown("""
     background: linear-gradient(135deg, #1CB5E0, #000851);
 }
 
-/* ===== OVERLAY (SEND IT BACK) ===== */
+/* ===== OVERLAY (SAFE) ===== */
 .stApp::before {
     content: "";
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.45);
-    z-index: 0;   /* IMPORTANT: keep it behind */
-}
-
-/* ===== KEEP CONTENT ABOVE ===== */
-.stApp > * {
-    position: relative;
-    z-index: 1;
+    background: rgba(0, 0, 0, 0.35);  /* lighter */
+    z-index: -1;   /* 👈 VERY IMPORTANT */
 }
 
 /* ===== SIDEBAR ===== */
@@ -33,36 +27,26 @@ section[data-testid="stSidebar"] {
     background: linear-gradient(135deg, #1CB5E0, #000851);
 }
 
-/* Sidebar overlay behind content */
-section[data-testid="stSidebar"]::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.55);
-    z-index: 0;
+/* ===== TEXT ===== */
+h1, h2, h3, h4, h5, h6, p, label, span {
+    color: white !important;
 }
 
-section[data-testid="stSidebar"] * {
-    position: relative;
-    z-index: 1;
-}
-
-/* ===== BUTTON FIX ===== */
-button {
-    position: relative;
-    z-index: 2 !important;
+/* ===== SAFE BUTTON STYLING ===== */
+div.stButton > button {
     color: white !important;
     background-color: rgba(255,255,255,0.15) !important;
-    border: 1px solid rgba(255,255,255,0.3) !important;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.3);
 }
 
-/* Hover effect */
-button:hover {
+/* Hover */
+div.stButton > button:hover {
     background-color: rgba(255,255,255,0.25) !important;
 }
 
-/* ===== TEXT ===== */
-h1, h2, h3, h4, h5, h6, p, label, span {
+/* ===== TOGGLE / CHECKBOX FIX ===== */
+div[data-baseweb="checkbox"] {
     color: white !important;
 }
 
