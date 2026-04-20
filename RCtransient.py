@@ -33,26 +33,6 @@ def draw_circuit(active_path="charge"):
     # Switch
     if active_path == "charge":
         sw = elm.Switch(action='close').right()
-        d += sw 
-
-        # Save position AFTER switch
-        d.push()
-
-        # (you can draw horizontal branch here if needed)
-
-        # Return to node
-        d.pop()
-
-        # 👉 Move to RIGHT side first
-        d += elm.Line().right(0.6)
-
-        # 👉 Then go DOWN
-        d += elm.Line().down(0.2)
-
-        # Vertical switch on right side
-        d += elm.Switch(action='open').down()
-
-        d += elm.Line().down(1)
     else:
         sw = elm.Switch(action='open').right()
 
