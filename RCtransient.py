@@ -55,8 +55,8 @@ def draw_circuit(active_path="charge"):
         d += elm.Line().down(1)
         d += elm.Switch(action='close').right()
         d += elm.Line().down(1.5)
-        d += elm.Line().left(2)
-        d += elm.Line().up(2)
+        d += elm.Line().left(1.9)
+        d += elm.Line().up(2.2)
 
     return d
 
