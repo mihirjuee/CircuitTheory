@@ -34,8 +34,9 @@ def draw_circuit(active_path="charge"):
         
         # Closed path to RC
         d += elm.Switch(action='close').right()
-    else:
         d.push()
+    else:
+        
         d += elm.Switch(action='open').right()
 
     # RC branch
