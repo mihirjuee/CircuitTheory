@@ -42,7 +42,7 @@ def draw_circuit(active_path="charge"):
 
     # Return path
     d += elm.Line().left(6)
-    d += elm.Line().up(2.2)
+    d += elm.Line().up(2.5)
 
     # Discharge loop
     if active_path == "discharge":
