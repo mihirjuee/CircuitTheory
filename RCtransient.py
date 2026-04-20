@@ -5,11 +5,37 @@ import schemdraw
 import schemdraw.elements as elm
 import time
 
+
+st.set_page_config(layout="wide")
+
+st.markdown("""
+<style>
+/* Main background */
+.stApp {
+    background-color: #0E1117;
+}
+
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background-color: #1c1f26;
+}
+
+/* Text color */
+h1, h2, h3, h4, h5, h6, p, label {
+    color: white;
+}
+</style>
+""", unsafe_allow_html=True)
+
+st.title("⚡ Electrical Lab Simulator")
+st.write("Welcome to interactive EE lab")
 # ================= PAGE =================
+
 st.set_page_config(page_title="RC Lab Simulator",page_icon="logo.png", layout="wide")
 st.title("⚡  RC Circuit Transient Behavior")
 
 # ================= SIDEBAR =================
+st.sidebar.image("logo.png", use_container_width=True)
 st.sidebar.header("⚙️ Controls")
 
 V = st.sidebar.slider("Voltage (V)", 1.0, 50.0, 10.0)
