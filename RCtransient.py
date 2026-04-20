@@ -33,6 +33,7 @@ def draw_circuit(active_path="charge"):
     # Switch
     if active_path == "charge":
         sw = elm.Switch(action='close').right()
+        d += sw 
         d.push()
         d.pop()
         d += elm.Line().down(0.2)
