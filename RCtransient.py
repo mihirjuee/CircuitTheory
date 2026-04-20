@@ -6,8 +6,8 @@ import schemdraw.elements as elm
 import time
 
 # ================= PAGE =================
-st.set_page_config(page_title="RC Lab Simulator", layout="wide")
-st.title("⚡ Ultra Realistic RC Circuit with SPDT Switch")
+st.set_page_config(page_title="RC Lab Simulator",page_icon="logo.png", layout="wide")
+st.title("⚡  RC Circuit Transient Behavior")
 
 # ================= SIDEBAR =================
 st.sidebar.header("⚙️ Controls")
@@ -41,7 +41,7 @@ def draw_circuit(active_path="charge"):
     d += elm.Capacitor().down().label("C")
 
     # Return path
-    d += elm.Line().left(2)
+    d += elm.Line().left(4)
     d += elm.Line().up(2)
 
     # Discharge loop
