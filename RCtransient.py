@@ -7,13 +7,12 @@ import time
 
 st.markdown("""
 <style>
-
-/* ===== MAIN BACKGROUND ===== */
+/* Ocean background */
 .stApp {
     background: linear-gradient(135deg, #1CB5E0, #000851);
 }
 
-/* ===== DARK OVERLAY FOR READABILITY ===== */
+/* Add dark overlay for readability */
 .stApp::before {
     content: "";
     position: fixed;
@@ -23,46 +22,12 @@ st.markdown("""
     z-index: -1;
 }
 
-/* ===== SIDEBAR BACKGROUND ===== */
-section[data-testid="stSidebar"] {
-    background: linear-gradient(135deg, #1CB5E0, #000851);
-}
-
-/* ===== SIDEBAR DARK OVERLAY ===== */
-section[data-testid="stSidebar"]::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.55);
-    z-index: 0;
-}
-
-/* ===== SIDEBAR CONTENT ABOVE OVERLAY ===== */
-section[data-testid="stSidebar"] * {
-    position: relative;
-    z-index: 1;
-}
-
-/* ===== TEXT COLOR FIX ===== */
-h1, h2, h3, h4, h5, h6, p, label, span, div {
+/* Make text readable */
+h1, h2, h3, h4, h5, h6, p, label, span {
     color: white !important;
 }
-
-/* ===== INPUTS VISIBILITY ===== */
-input, select, textarea {
-    color: white !important;
-    background-color: rgba(255,255,255,0.1) !important;
-}
-
-/* ===== SLIDER TEXT ===== */
-.stSlider label {
-    color: white !important;
-}
-
 </style>
 """, unsafe_allow_html=True)
-
 st.title("⚡ Electrical Lab Simulator")
 st.write("Welcome to interactive EE lab")
 # ================= PAGE =================
