@@ -46,8 +46,8 @@ def draw_circuit(active_path="charge"):
     d += elm.Resistor().down().label("R")
     d += elm.Capacitor().down().label("C")
 
-    d += elm.Line().left(3)
-    d += elm.Line().up(2)
+    d += elm.Line().left(4)
+    d += elm.Line().up(1)
 
     # Discharge branch
     if active_path == "discharge":
