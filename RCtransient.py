@@ -30,30 +30,30 @@ def draw_circuit(active_path="charge"):
     d += elm.Line().right()
     d += elm.Dot()
 
-    # SPDT switch (common point)
+    # Switch
     if active_path == "charge":
-        sw = d += elm.Switch(action='close').right()
+        sw = elm.Switch(action='close').right()
     else:
-        sw = d += elm.Switch(action='open').right()
+        sw = elm.Switch(action='open').right()
 
-    # 👉 SAVE position AFTER switch (this is key)
+    d += sw   # ✅ correct usage
+
+    # Save position AFTER switch
     d.push()
 
-    # ================= MAIN PATH (RC branch) =================
+    # RC branch
     d += elm.Line().right()
     d += elm.Resistor().down().label("R")
     d += elm.Capacitor().down().label("C")
 
-    # Return path
     d += elm.Line().left(3)
     d += elm.Line().up(2)
 
-    # ================= DISCHARGE BRANCH =================
+    # Discharge branch
     if active_path == "discharge":
-        d.pop()   # go back to switch node
-
+        d.pop()
         d += elm.Line().down(1)
-        d += elm.Switch(action='close').right().label("Discharge")
+        d += elm.Switch(action='close').right()
         d += elm.Line().down(1.5)
         d += elm.Line().left(2)
         d += elm.Line().up(2)
