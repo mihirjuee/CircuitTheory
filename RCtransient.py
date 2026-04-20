@@ -21,43 +21,42 @@ run = st.sidebar.button("▶ Run Simulation")
 
 # ================= CIRCUIT =================
 def draw_circuit(active_path="charge"):
-    d = schemdraw.Drawing()
+    d = schemdraw.Drawing(unit=1.2)
 
     # Battery
     d += elm.SourceV().up().label("V")
 
-    # Switch node
+    # Node
     d += elm.Line().right()
     d += elm.Dot()
-    
-    if active_path == "charge":
-        
-        # Closed path to RC
-        d += elm.Switch(action='close').right()
-        
-    else:
-        d.push()
-        d += elm.Switch(action='open').right()
 
-    # RC branch
+    # SPDT switch (common point)
+    if active_path == "charge":
+        sw = d += elm.Switch(action='close').right()
+    else:
+        sw = d += elm.Switch(action='open').right()
+
+    # 👉 SAVE position AFTER switch (this is key)
+    d.push()
+
+    # ================= MAIN PATH (RC branch) =================
     d += elm.Line().right()
-    
     d += elm.Resistor().down().label("R")
     d += elm.Capacitor().down().label("C")
 
     # Return path
-    d += elm.Line().left(9)
-    d += elm.Line().up(3)
+    d += elm.Line().left(3)
+    d += elm.Line().up(2)
 
-    # Discharge loop
+    # ================= DISCHARGE BRANCH =================
     if active_path == "discharge":
-        d.pop()
+        d.pop()   # go back to switch node
+
         d += elm.Line().down(1)
-        d.push()
-        d += elm.Line().down(1)
-        d += elm.Switch(action='close')
-        d += elm.Line().down(1.5)        
-        d.pop()
+        d += elm.Switch(action='close').right().label("Discharge")
+        d += elm.Line().down(1.5)
+        d += elm.Line().left(2)
+        d += elm.Line().up(2)
 
     return d
 
