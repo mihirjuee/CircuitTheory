@@ -98,7 +98,7 @@ ax.set_ylim(bottom=0)
 graph_placeholder.pyplot(fig2)
 
 value_placeholder.metric("Capacitor Voltage", f"{Vc[-1]:.2f} V")
-value_placeholder.metric("Time Constant", f"{tau:.2f} s") 
+#value_placeholder.metric("Time Constant", f"{tau:.2f} s") 
 
 # ================= REAL-TIME SIM =================
 if run:
