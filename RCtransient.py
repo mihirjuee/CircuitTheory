@@ -8,51 +8,60 @@ import time
 st.markdown("""
 <style>
 
-/* ===== BACKGROUND ===== */
+/* ===== MAIN BACKGROUND ===== */
 .stApp {
     background: linear-gradient(135deg, #1CB5E0, #000851);
 }
 
-/* ===== OVERLAY (SAFE) ===== */
+/* ===== DARK OVERLAY FOR READABILITY ===== */
 .stApp::before {
     content: "";
     position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.35);  /* lighter */
-    z-index: -1;   /* 👈 VERY IMPORTANT */
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: -1;
 }
 
-/* ===== SIDEBAR ===== */
+/* ===== SIDEBAR BACKGROUND ===== */
 section[data-testid="stSidebar"] {
     background: linear-gradient(135deg, #1CB5E0, #000851);
 }
 
-/* ===== TEXT ===== */
-h1, h2, h3, h4, h5, h6, p, label, span {
+/* ===== SIDEBAR DARK OVERLAY ===== */
+section[data-testid="stSidebar"]::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 0;
+}
+
+/* ===== SIDEBAR CONTENT ABOVE OVERLAY ===== */
+section[data-testid="stSidebar"] * {
+    position: relative;
+    z-index: 1;
+}
+
+/* ===== TEXT COLOR FIX ===== */
+h1, h2, h3, h4, h5, h6, p, label, span, div {
     color: white !important;
 }
 
-/* ===== SAFE BUTTON STYLING ===== */
-div.stButton > button {
+/* ===== INPUTS VISIBILITY ===== */
+input, select, textarea {
     color: white !important;
-    background-color: rgba(255,255,255,0.15) !important;
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.3);
+    background-color: rgba(255,255,255,0.1) !important;
 }
 
-/* Hover */
-div.stButton > button:hover {
-    background-color: rgba(255,255,255,0.25) !important;
-}
-
-/* ===== TOGGLE / CHECKBOX FIX ===== */
-div[data-baseweb="checkbox"] {
+/* ===== SLIDER TEXT ===== */
+.stSlider label {
     color: white !important;
 }
 
 </style>
 """, unsafe_allow_html=True)
-
 
 st.title("⚡ Electrical Lab Simulator")
 st.write("Welcome to interactive EE lab")
