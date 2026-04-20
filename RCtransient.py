@@ -8,7 +8,8 @@ import time
 st.markdown("""
 <style>
 .stApp {
-    background: linear-gradient(120deg, #021B79, #0575E6);
+    background: linear-gradient(135deg, #1CB5E0, #000851);
+    color: white;
 }
 </style>
 """, unsafe_allow_html=True)
