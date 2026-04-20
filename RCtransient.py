@@ -6,22 +6,10 @@ import schemdraw.elements as elm
 import time
 
 
-st.set_page_config(layout="wide")
-
 st.markdown("""
 <style>
-/* Main background */
 .stApp {
-    background-color: #0E1117;
-}
-
-/* Sidebar */
-section[data-testid="stSidebar"] {
-    background-color: #1c1f26;
-}
-
-/* Text color */
-h1, h2, h3, h4, h5, h6, p, label {
+    background: linear-gradient(135deg, #1CB5E0, #000851);
     color: white;
 }
 </style>
