@@ -7,24 +7,8 @@ import time
 
 st.markdown("""
 <style>
-/* Ocean background */
 .stApp {
-    background: linear-gradient(135deg, #1CB5E0, #000851);
-}
-
-/* Add dark overlay for readability */
-.stApp::before {
-    content: "";
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.45);
-    z-index: -1;
-}
-
-/* Make text readable */
-h1, h2, h3, h4, h5, h6, p, label, span {
-    color: white !important;
+    background: linear-gradient(120deg, #021B79, #0575E6);
 }
 </style>
 """, unsafe_allow_html=True)
