@@ -52,7 +52,7 @@ def draw_circuit(active_path="charge"):
     # Discharge branch
     if active_path == "discharge":
         d.pop()
-        d += elm.Line().down(1)
+       
         d += elm.Switch(action='close').down()
         d += elm.Line().down(1.5)
 
