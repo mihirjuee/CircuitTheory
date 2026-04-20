@@ -37,6 +37,7 @@ def draw_circuit(active_path="charge"):
         d += elm.Switch(action='open').right()
 
     # RC branch
+    d.push()
     d += elm.Resistor().down().label("R")
     d += elm.Capacitor().down().label("C")
 
@@ -46,6 +47,8 @@ def draw_circuit(active_path="charge"):
 
     # Discharge loop
     if active_path == "discharge":
+        d.pop()
+        d += elm.Line().down(1)
         d.push()
         d += elm.Line().right(1)
         d += elm.Switch(action='close')
