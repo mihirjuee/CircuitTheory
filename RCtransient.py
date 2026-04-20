@@ -9,8 +9,14 @@ import time
 st.markdown("""
 <style>
 .stApp {
-    background: linear-gradient(135deg, #1CB5E0, #000851);
-    color: white;
+    background: linear-gradient(135deg, #0f2027, #2c5364);
+}
+
+/* Card effect */
+.block-container {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2rem;
+    border-radius: 15px;
 }
 </style>
 """, unsafe_allow_html=True)
