@@ -137,6 +137,12 @@ if run:
         graph_placeholder.pyplot(fig2)
 
         # Live voltage
+
+        vc_placeholder = st.empty()
+        tau_placeholder = st.empty()
+
+        vc_placeholder.metric("Capacitor Voltage", f"{vc:.2f} V")
+        tau_placeholder.metric("Time Constant", f"{tau:.2f} s")
         value_placeholder.metric("Capacitor Voltage", f"{vc:.2f} V")
         value_placeholder.metric("Time Constant", f"{tau:.2f} s")
 
