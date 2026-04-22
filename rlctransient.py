@@ -48,27 +48,32 @@ omega_0 = 1 / np.sqrt(L * C)
 t = np.linspace(0, 0.1, 2000)
 
 # --- RESPONSE ---
+# --- ENERGY + CAPACITOR VOLTAGE ---
+
 if alpha < omega_0:
     omega_d = np.sqrt(omega_0**2 - alpha**2)
-    i = (V / L) * (1/omega_d) * np.exp(-alpha*t) * np.sin(omega_d*t)
-    response = "🟢 Underdamped"
-    color_resp = "lime"
+
+    v_c = V * (
+        1
+        - np.exp(-alpha*t) * (
+            np.cos(omega_d*t)
+            + (alpha/omega_d)*np.sin(omega_d*t)
+        )
+    )
 
 elif abs(alpha - omega_0) < 1e-3:
-    i = (V / L) * t * np.exp(-alpha*t)
-    response = "🟡 Critically Damped"
-    color_resp = "yellow"
+    v_c = V * (1 - (1 + alpha*t)*np.exp(-alpha*t))
 
 else:
     s1 = -alpha + np.sqrt(alpha**2 - omega_0**2)
     s2 = -alpha - np.sqrt(alpha**2 - omega_0**2)
-    i = (V / L) * (np.exp(s1*t) - np.exp(s2*t)) / (s1 - s2)
-    response = "🔴 Overdamped"
-    color_resp = "red"
+
+    v_c = V * (
+        1 - ( (s2*np.exp(s1*t) - s1*np.exp(s2*t)) / (s2 - s1) )
+    )
 
 # --- ENERGY ---
 W_L = 0.5 * L * i**2
-v_c = V * (1 - np.exp(-alpha*t))
 W_C = 0.5 * C * v_c**2
 
 # =====================================
