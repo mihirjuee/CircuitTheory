@@ -173,11 +173,16 @@ st.pyplot(fig2)
 st.subheader("🧠 Concept Insight")
 
 if alpha < omega_0:
-    st.success("Energy oscillates between L and C → sinusoidal decay.")
+    msg = "Energy oscillates between L and C → sinusoidal decay."
 elif abs(alpha - omega_0) < 1e-3:
-    st.warning("Fastest return to steady state without oscillation.")
+    msg = "Fastest return to steady state without oscillation."
 else:
-    st.error("Highly damped → slow energy dissipation.")
+    msg = "Highly damped → slow energy dissipation."
+
+st.markdown(
+    f"<div style='color:red; font-size:18px; font-weight:bold'>{msg}</div>",
+    unsafe_allow_html=True
+)
 
 # =====================================
 # 🧪 INTERACTIVE QUESTION
