@@ -69,21 +69,21 @@ def draw_rlc_circuit(V, R, L, C_micro):
 
         fig = d.draw()
 
-        # ✅ Force proper matplotlib figure
+        # 🔥 Force conversion
         if hasattr(fig, "figure"):
             fig = fig.figure
 
-        # ✅ FINAL CHECK (very important)
+        # 🔥 Create fallback if still invalid
         if not hasattr(fig, "savefig"):
-            raise ValueError("Not a valid matplotlib figure")
+            raise Exception("Invalid figure")
 
         return fig
 
     except:
-        # 🔥 FALLBACK (guaranteed to work)
+        # ✅ ALWAYS WORKS
         fig, ax = plt.subplots(figsize=(8, 2))
-        ax.text(0.3, 0.5, "RLC Series Circuit", fontsize=14)
-        ax.text(0.3, 0.3, f"V={V}V  R={R}Ω  L={L}H  C={C_micro}μF")
+        ax.text(0.2, 0.6, "RLC Series Circuit", fontsize=14)
+        ax.text(0.2, 0.4, f"V={V}V  R={R}Ω  L={L}H  C={C_micro}μF")
         ax.axis('off')
         return fig
 
