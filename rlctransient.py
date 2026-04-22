@@ -50,16 +50,19 @@ col2.metric("Natural Frequency ω₀", f"{omega_0:.2f}")
 col3.metric("Response Type", response)
 
 # --- CIRCUIT DIAGRAM (FIXED) ---
-st.subheader("🔌 RLC Series Circuit")
-fig_c, ax_c = plt.subplots(figsize=(8, 2))
-d = schemdraw.Drawing(canvas=ax_c)
-d.add(elm.SourceV(label=f'{V}V'))
-d.add(elm.Resistor(label=f'{R}Ω'))
-d.add(elm.Inductor(label=f'{L}H'))
-d.add(elm.Capacitor(label=f'{C_micro}μF'))
-d.add(elm.Line(to=(0,0)))
-ax_c.axis('off')
-st.pyplot(fig_c)
+def draw_rlc_circuit(V, R, L, C_micro):
+    fig, ax = plt.subplots(figsize=(8, 2))
+    d = schemdraw.Drawing(canvas=ax)
+    d.add(elm.SourceV(label=f'{V}V'))
+    d.add(elm.Resistor(label=f'{R}Ω'))
+    d.add(elm.Inductor(label=f'{L}H'))
+    d.add(elm.Capacitor(label=f'{C_micro}μF'))
+    d.add(elm.Line(to=(0,0)))
+    ax.axis('off')
+    return fig
+
+# Then in your app:
+st.pyplot(draw_rlc_circuit(V, R, L, C_micro))
 
 # --- CURRENT RESPONSE ---
 st.subheader("📈 Current Response")
