@@ -63,44 +63,27 @@ col3.metric("Response Type", response)
 # =========================================================
 # 🔌 CIRCUIT DIAGRAM (STABLE VERSION)
 # =========================================================
-st.subheader("🔌 RLC Circuit")
+st.subheader("🔌 RLC Series Circuit")
 
-try:
-    d = schemdraw.Drawing(unit=2.5)
+fig, ax = plt.subplots()
 
-    d += elm.SourceSin().label(f"{V:.1f} V (Step)")
-    d += elm.Resistor().right().label(f"R = {R:.1f} Ω")
-    d += elm.Inductor().right().label(f"L = {L:.3f} H")
-    d += elm.Capacitor().right().label(f"C = {C_micro:.1f} μF")
+# Draw line (wire)
+ax.plot([0.1, 0.9], [0.5, 0.5], linewidth=2)
 
-    d += elm.Line().down()
-    d += elm.Line().left().length(6)
-    d += elm.Ground()
+# Labels
+ax.text(0.1, 0.6, f"V = {V:.1f}V", fontsize=12)
+ax.text(0.35, 0.6, f"R = {R:.1f}Ω", fontsize=12)
+ax.text(0.55, 0.6, f"L = {L:.3f}H", fontsize=12)
+ax.text(0.75, 0.6, f"C = {C_micro:.0f}μF", fontsize=12)
 
-    # --- SAFE DRAW ---
-    fig_circuit = d.draw()
+# Current arrow
+ax.arrow(0.2, 0.4, 0.4, 0, head_width=0.05)
+ax.text(0.4, 0.35, "i(t)")
 
-    # Handle schemdraw backend safely
-    if hasattr(fig_circuit, "figure"):
-        fig_circuit = fig_circuit.figure
+ax.set_title("Series RLC Circuit")
+ax.axis('off')
 
-    st.pyplot(fig_circuit)
-
-except Exception as e:
-    st.warning("⚠️ Circuit diagram could not be rendered (schemdraw issue on cloud).")
-
-    # --- FALLBACK SIMPLE CIRCUIT ---
-    fig_fallback, ax = plt.subplots()
-
-    ax.text(0.2, 0.5, "V", fontsize=14)
-    ax.text(0.4, 0.5, f"R={R:.1f}", fontsize=12)
-    ax.text(0.55, 0.5, f"L={L:.2f}", fontsize=12)
-    ax.text(0.7, 0.5, f"C={C_micro:.0f}μF", fontsize=12)
-
-    ax.plot([0.1, 0.85], [0.5, 0.5])
-    ax.axis('off')
-
-    st.pyplot(fig_fallback)
+st.pyplot(fig)
 
 # =========================================================
 # 📈 CURRENT RESPONSE
