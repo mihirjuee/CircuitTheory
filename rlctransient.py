@@ -51,14 +51,27 @@ col3.metric("Response Type", response)
 
 # --- CIRCUIT DIAGRAM (FIXED) ---
 def draw_rlc_circuit(V, R, L, C_micro):
-    fig, ax = plt.subplots(figsize=(8, 2))
-    d = schemdraw.Drawing(canvas=ax)
-    d.add(elm.SourceV(label=f'{V}V'))
-    d.add(elm.Resistor(label=f'{R}Ω'))
-    d.add(elm.Inductor(label=f'{L}H'))
-    d.add(elm.Capacitor(label=f'{C_micro}μF'))
-    d.add(elm.Line(to=(0,0)))
-    ax.axis('off')
+    import schemdraw
+    import schemdraw.elements as elm
+
+    d = schemdraw.Drawing(unit=2.5)
+
+    d += elm.SourceV().label(f"{V:.1f} V")
+    d += elm.Resistor().right().label(f"{R:.1f} Ω")
+    d += elm.Inductor().right().label(f"{L:.3f} H")
+    d += elm.Capacitor().right().label(f"{C_micro:.1f} μF")
+
+    d += elm.Line().down()
+    d += elm.Line().left().length(6)
+    d += elm.Ground()
+
+    # --- IMPORTANT ---
+    fig = d.draw()
+
+    # Convert if needed
+    if hasattr(fig, "figure"):
+        fig = fig.figure
+
     return fig
 
 # Then in your app:
