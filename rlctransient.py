@@ -80,33 +80,34 @@ col1.metric("Damping Factor α", f"{alpha:.2f}")
 col2.metric("Natural Frequency ω₀", f"{omega_0:.2f}")
 col3.markdown(f"<h3 style='color:{color_resp}'>{response}</h3>", unsafe_allow_html=True)
 
-# =====================================
-# 🔌 CIRCUIT (NO SCHEMDRAW - CLEAN)
-# =====================================
-st.subheader("🔌 RLC Circuit")
 
-fig_circ, ax_circ = plt.subplots(figsize=(10, 2))
+# --- CIRCUIT DIAGRAM ---
+st.subheader("🔌 RLC Series Circuit")
 
-# Draw simple line circuit
-ax_circ.plot([0,1],[0.5,0.5])   # source line
-ax_circ.text(0,0.6,f"{V:.0f}V")
+def draw_circuit(V, R, L, C_m):
+    # Create figure and axis explicitly
+    fig, ax = plt.subplots(figsize=(10, 2))
+    
+    # Helper function for components to keep code clean
+    def draw_comp(x1, x2, label):
+        ax.plot([x1, x2], [0.5, 0.5], 'k-', lw=2)
+        ax.text((x1+x2)/2, 0.6, label, ha='center', fontweight='bold')
 
-ax_circ.plot([1,2],[0.5,0.5])
-ax_circ.text(1.3,0.7,f"R={R:.1f}Ω")
+    # Draw circuit components
+    draw_comp(0, 1, f"{V:.0f}V")
+    draw_comp(1, 2, f"R={R:.1f}Ω")
+    draw_comp(2, 3, f"L={L:.2f}H")
+    draw_comp(3, 4, f"C={C_m:.0f}μF")
+    
+    # Draw closing wire
+    ax.plot([4, 4, 0, 0], [0.5, 0, 0, 0.5], 'k-', lw=2)
+    
+    # Finalize axis
+    ax.axis('off')
+    return fig
 
-ax_circ.plot([2,3],[0.5,0.5])
-ax_circ.text(2.3,0.7,f"L={L:.2f}H")
-
-ax_circ.plot([3,4],[0.5,0.5])
-ax_circ.text(3.3,0.7,f"C={C_micro:.0f}μF")
-
-ax_circ.plot([4,4],[0.5,0])
-ax_circ.plot([4,0],[0,0])
-ax_circ.plot([0,0],[0,0.5])
-
-ax_circ.axis('off')
-
-st.pyplot(fig_circ)
+# Render the circuit figure
+st.pyplot(draw_circuit(V, R, L, C_micro))
 
 # =====================================
 # 📈 CURRENT RESPONSE
