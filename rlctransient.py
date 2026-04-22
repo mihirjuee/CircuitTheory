@@ -60,33 +60,47 @@ col3.metric("Response Type", response)
 # =========================================================
 # 🔌 CIRCUIT DIAGRAM (ERROR-FREE)
 # =========================================================
+# =========================================================
+# 🔌 CIRCUIT DIAGRAM (STABLE VERSION)
+# =========================================================
 st.subheader("🔌 RLC Circuit")
 
-d = schemdraw.Drawing(unit=2.5)
-
-d += elm.SourceSin().label(f"{V:.1f} V (Step)")
-d += elm.Resistor().right().label(f"R = {R:.1f} Ω")
-d += elm.Inductor().right().label(f"L = {L:.3f} H")
-d += elm.Capacitor().right().label(f"C = {C_micro:.1f} μF")
-
-d += elm.Line().down()
-d += elm.Line().left().length(6)
-d += elm.Ground()
-
-# --- SAFE DRAW ---
-fig_circuit = d.draw()
-
-# Ensure matplotlib figure
-if hasattr(fig_circuit, "figure"):
-    fig_circuit = fig_circuit.figure
-
-# Resize safely
 try:
-    fig_circuit.set_size_inches(10, 3)
-except:
-    pass
+    d = schemdraw.Drawing(unit=2.5)
 
-st.pyplot(fig_circuit)
+    d += elm.SourceSin().label(f"{V:.1f} V (Step)")
+    d += elm.Resistor().right().label(f"R = {R:.1f} Ω")
+    d += elm.Inductor().right().label(f"L = {L:.3f} H")
+    d += elm.Capacitor().right().label(f"C = {C_micro:.1f} μF")
+
+    d += elm.Line().down()
+    d += elm.Line().left().length(6)
+    d += elm.Ground()
+
+    # --- SAFE DRAW ---
+    fig_circuit = d.draw()
+
+    # Handle schemdraw backend safely
+    if hasattr(fig_circuit, "figure"):
+        fig_circuit = fig_circuit.figure
+
+    st.pyplot(fig_circuit)
+
+except Exception as e:
+    st.warning("⚠️ Circuit diagram could not be rendered (schemdraw issue on cloud).")
+
+    # --- FALLBACK SIMPLE CIRCUIT ---
+    fig_fallback, ax = plt.subplots()
+
+    ax.text(0.2, 0.5, "V", fontsize=14)
+    ax.text(0.4, 0.5, f"R={R:.1f}", fontsize=12)
+    ax.text(0.55, 0.5, f"L={L:.2f}", fontsize=12)
+    ax.text(0.7, 0.5, f"C={C_micro:.0f}μF", fontsize=12)
+
+    ax.plot([0.1, 0.85], [0.5, 0.5])
+    ax.axis('off')
+
+    st.pyplot(fig_fallback)
 
 # =========================================================
 # 📈 CURRENT RESPONSE
