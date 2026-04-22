@@ -1,118 +1,181 @@
+# ================================
+# ⚡ RLC TRANSIENT LAB (PREMIUM UI)
+# ================================
+
 import matplotlib
 matplotlib.use('Agg')
 
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
-import schemdraw
-import schemdraw.elements as elm
 
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="RLC Transient Lab", layout="wide")
 
-st.title("⚡ RLC Transient Analysis (Series Circuit)")
+# --- CUSTOM STYLE ---
+st.markdown("""
+<style>
+.stApp {
+    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+    color: white;
+}
+h1, h2, h3 {
+    text-align: center;
+}
+</style>
+""", unsafe_allow_html=True)
 
-# --- SIDEBAR ---
+st.title("⚡ RLC Transient Analysis (Series Circuit)")
+st.markdown("### 🔬 Visualize damping, oscillation & energy exchange")
+
+# =====================================
+# 🔧 SIDEBAR
+# =====================================
 st.sidebar.header("🔧 Circuit Parameters")
+
 R = st.sidebar.slider("Resistance R (Ω)", 0.1, 100.0, 10.0)
 L = st.sidebar.slider("Inductance L (H)", 0.001, 1.0, 0.1)
 C_micro = st.sidebar.slider("Capacitance (μF)", 1.0, 1000.0, 100.0)
 C = C_micro * 1e-6
 V = st.sidebar.slider("Step Voltage (V)", 1.0, 500.0, 100.0)
 
-# --- CALCULATIONS ---
+# =====================================
+# ⚙️ CALCULATIONS
+# =====================================
 alpha = R / (2 * L)
 omega_0 = 1 / np.sqrt(L * C)
-t = np.linspace(0, 0.1, 1000)
 
+t = np.linspace(0, 0.1, 2000)
+
+# --- RESPONSE ---
 if alpha < omega_0:
     omega_d = np.sqrt(omega_0**2 - alpha**2)
     i = (V / L) * (1/omega_d) * np.exp(-alpha*t) * np.sin(omega_d*t)
     response = "🟢 Underdamped"
+    color_resp = "lime"
+
 elif abs(alpha - omega_0) < 1e-3:
     i = (V / L) * t * np.exp(-alpha*t)
     response = "🟡 Critically Damped"
+    color_resp = "yellow"
+
 else:
     s1 = -alpha + np.sqrt(alpha**2 - omega_0**2)
     s2 = -alpha - np.sqrt(alpha**2 - omega_0**2)
     i = (V / L) * (np.exp(s1*t) - np.exp(s2*t)) / (s1 - s2)
     response = "🔴 Overdamped"
+    color_resp = "red"
 
-# Energy Calculations
+# --- ENERGY ---
 W_L = 0.5 * L * i**2
 v_c = V * (1 - np.exp(-alpha*t))
 W_C = 0.5 * C * v_c**2
 
-# --- METRICS ---
+# =====================================
+# 📊 METRICS
+# =====================================
 col1, col2, col3 = st.columns(3)
+
 col1.metric("Damping Factor α", f"{alpha:.2f}")
 col2.metric("Natural Frequency ω₀", f"{omega_0:.2f}")
-col3.metric("Response Type", response)
+col3.markdown(f"<h3 style='color:{color_resp}'>{response}</h3>", unsafe_allow_html=True)
 
-# --- CIRCUIT DIAGRAM (FIXED) ---
-def draw_rlc_circuit(V, R, L, C_micro):
-    import schemdraw
-    import schemdraw.elements as elm
-    import matplotlib.pyplot as plt
+# =====================================
+# 🔌 CIRCUIT (NO SCHEMDRAW - CLEAN)
+# =====================================
+st.subheader("🔌 RLC Circuit")
 
-    try:
-        d = schemdraw.Drawing(unit=2.5)
+fig_circ, ax_circ = plt.subplots(figsize=(10, 2))
 
-        d += elm.SourceV().label(f"{V:.1f} V")
-        d += elm.Resistor().right().label(f"{R:.1f} Ω")
-        d += elm.Inductor().right().label(f"{L:.3f} H")
-        d += elm.Capacitor().right().label(f"{C_micro:.1f} μF")
+# Draw simple line circuit
+ax_circ.plot([0,1],[0.5,0.5])   # source line
+ax_circ.text(0,0.6,f"{V:.0f}V")
 
-        d += elm.Line().down()
-        d += elm.Line().left().length(6)
-        d += elm.Ground()
+ax_circ.plot([1,2],[0.5,0.5])
+ax_circ.text(1.3,0.7,f"R={R:.1f}Ω")
 
-        fig = d.draw()
+ax_circ.plot([2,3],[0.5,0.5])
+ax_circ.text(2.3,0.7,f"L={L:.2f}H")
 
-        # 🔥 Force conversion
-        if hasattr(fig, "figure"):
-            fig = fig.figure
+ax_circ.plot([3,4],[0.5,0.5])
+ax_circ.text(3.3,0.7,f"C={C_micro:.0f}μF")
 
-        # 🔥 Create fallback if still invalid
-        if not hasattr(fig, "savefig"):
-            raise Exception("Invalid figure")
+ax_circ.plot([4,4],[0.5,0])
+ax_circ.plot([4,0],[0,0])
+ax_circ.plot([0,0],[0,0.5])
 
-        return fig
+ax_circ.axis('off')
 
-    except:
-        # ✅ ALWAYS WORKS
-        fig, ax = plt.subplots(figsize=(8, 2))
-        ax.text(0.2, 0.6, "RLC Series Circuit", fontsize=14)
-        ax.text(0.2, 0.4, f"V={V}V  R={R}Ω  L={L}H  C={C_micro}μF")
-        ax.axis('off')
-        return fig
+st.pyplot(fig_circ)
 
-# --- CURRENT RESPONSE ---
-st.subheader("📈 Current Response")
+# =====================================
+# 📈 CURRENT RESPONSE
+# =====================================
+st.subheader("📈 Transient Current")
+
 fig1, ax1 = plt.subplots()
-ax1.plot(t, i, color='tab:blue', linewidth=2)
-ax1.set(xlabel="Time (s)", ylabel="Current (A)", title="Transient Current")
-ax1.grid(True)
+
+ax1.plot(t, i, linewidth=2)
+ax1.fill_between(t, i, alpha=0.2)
+
+ax1.set_xlabel("Time (s)")
+ax1.set_ylabel("Current (A)")
+ax1.set_title("Current Response")
+ax1.grid()
+
+# Highlight oscillation decay
+ax1.axhline(0, linestyle='--')
+
 st.pyplot(fig1)
 
-# --- ENERGY PLOT ---
+# =====================================
+# ⚡ ENERGY FLOW
+# =====================================
 st.subheader("⚡ Energy Exchange")
+
 fig2, ax2 = plt.subplots()
+
 ax2.plot(t, W_L, label="Inductor Energy")
 ax2.plot(t, W_C, label="Capacitor Energy")
-ax2.set(xlabel="Time (s)", ylabel="Energy (J)", title="Energy Storage")
+
+ax2.fill_between(t, W_L, alpha=0.1)
+ax2.fill_between(t, W_C, alpha=0.1)
+
+ax2.set_xlabel("Time (s)")
+ax2.set_ylabel("Energy (J)")
+ax2.set_title("Energy Oscillation")
 ax2.legend()
-ax2.grid(True)
+ax2.grid()
+
 st.pyplot(fig2)
 
-# --- INTERPRETATION ---
-st.subheader("🧠 Interpretation")
-if alpha < omega_0:
-    st.success("Oscillatory response → Energy exchanges between L and C.")
-elif abs(alpha - omega_0) < 1e-3:
-    st.warning("Fastest response without oscillation.")
-else:
-    st.error("Slow response, no oscillation.")
+# =====================================
+# 🎯 INTERPRETATION PANEL
+# =====================================
+st.subheader("🧠 Concept Insight")
 
-st.markdown("### 📌 Key Concepts")
-st.markdown(f"- Damping Factor (α) = {alpha:.3f} | Natural Frequency (ω₀) = {omega_0:.3f} rad/s")
+if alpha < omega_0:
+    st.success("Energy oscillates between L and C → sinusoidal decay.")
+elif abs(alpha - omega_0) < 1e-3:
+    st.warning("Fastest return to steady state without oscillation.")
+else:
+    st.error("Highly damped → slow energy dissipation.")
+
+# =====================================
+# 🧪 INTERACTIVE QUESTION
+# =====================================
+st.subheader("❓ Think & Explore")
+
+st.markdown("""
+👉 Why does oscillation disappear when resistance increases?
+
+👉 What happens if R → 0?
+
+👉 Where is energy stored at peak current?
+""")
+
+# =====================================
+# 📌 FOOTER
+# =====================================
+st.markdown("---")
+st.markdown("Built for intuitive learning ⚡ | Explore, visualize, understand.")
