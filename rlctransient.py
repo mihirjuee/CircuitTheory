@@ -53,31 +53,39 @@ col3.metric("Response Type", response)
 def draw_rlc_circuit(V, R, L, C_micro):
     import schemdraw
     import schemdraw.elements as elm
+    import matplotlib.pyplot as plt
 
-    d = schemdraw.Drawing(unit=2.5)
-
-    d += elm.SourceV().label(f"{V:.1f} V")
-    d += elm.Resistor().right().label(f"{R:.1f} Ω")
-    d += elm.Inductor().right().label(f"{L:.3f} H")
-    d += elm.Capacitor().right().label(f"{C_micro:.1f} μF")
-
-    d += elm.Line().down()
-    d += elm.Line().left().length(6)
-    d += elm.Ground()
-
-    # --- FORCE MATPLOTLIB BACKEND ---
-    fig = d.draw()
-
-    # 🔥 CRITICAL FIX
     try:
-        fig = fig.figure  # convert schemdraw → matplotlib
+        d = schemdraw.Drawing(unit=2.5)
+
+        d += elm.SourceV().label(f"{V:.1f} V")
+        d += elm.Resistor().right().label(f"{R:.1f} Ω")
+        d += elm.Inductor().right().label(f"{L:.3f} H")
+        d += elm.Capacitor().right().label(f"{C_micro:.1f} μF")
+
+        d += elm.Line().down()
+        d += elm.Line().left().length(6)
+        d += elm.Ground()
+
+        fig = d.draw()
+
+        # ✅ Force proper matplotlib figure
+        if hasattr(fig, "figure"):
+            fig = fig.figure
+
+        # ✅ FINAL CHECK (very important)
+        if not hasattr(fig, "savefig"):
+            raise ValueError("Not a valid matplotlib figure")
+
+        return fig
+
     except:
-        pass
-
-    return fig
-
-# Then in your app:
-st.pyplot(draw_rlc_circuit(V, R, L, C_micro))
+        # 🔥 FALLBACK (guaranteed to work)
+        fig, ax = plt.subplots(figsize=(8, 2))
+        ax.text(0.3, 0.5, "RLC Series Circuit", fontsize=14)
+        ax.text(0.3, 0.3, f"V={V}V  R={R}Ω  L={L}H  C={C_micro}μF")
+        ax.axis('off')
+        return fig
 
 # --- CURRENT RESPONSE ---
 st.subheader("📈 Current Response")
