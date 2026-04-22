@@ -65,12 +65,14 @@ def draw_rlc_circuit(V, R, L, C_micro):
     d += elm.Line().left().length(6)
     d += elm.Ground()
 
-    # --- IMPORTANT ---
+    # --- FORCE MATPLOTLIB BACKEND ---
     fig = d.draw()
 
-    # Convert if needed
-    if hasattr(fig, "figure"):
-        fig = fig.figure
+    # 🔥 CRITICAL FIX
+    try:
+        fig = fig.figure  # convert schemdraw → matplotlib
+    except:
+        pass
 
     return fig
 
