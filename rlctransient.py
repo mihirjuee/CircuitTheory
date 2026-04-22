@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # --- PAGE CONFIG ---
-st.set_page_config(page_title="RLC Transient Lab", layout="wide")
+st.set_page_config(page_title="RLC Transient Lab",page_icon="logo.png", layout="wide")
 
 # --- CUSTOM STYLE ---
 st.markdown("""
