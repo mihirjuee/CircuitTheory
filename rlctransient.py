@@ -42,19 +42,26 @@ V = st.sidebar.slider("Step Voltage (V)", 1.0, 500.0, 100.0)
 # =====================================
 # ⚙️ CALCULATIONS
 # =====================================
-# --- INITIALIZE (VERY IMPORTANT) ---
+# --- DERIVED PARAMETERS ---
+alpha = R / (2 * L)
+omega_0 = 1 / np.sqrt(L * C)
+
+# --- TIME ---
+t = np.linspace(0, 0.02, 2000)
+
+# --- INITIALIZE ---
 i = np.zeros_like(t)
 v_c = np.zeros_like(t)
+response = ""
+color_resp = ""
 
-# --- RESPONSE + CAPACITOR VOLTAGE ---
+# --- RESPONSE + WAVEFORMS ---
 if alpha < omega_0:
-    # Underdamped
+    # 🟢 UNDERDAMPED
     omega_d = np.sqrt(omega_0**2 - alpha**2)
 
-    # Current
     i = (V / L) * (1/omega_d) * np.exp(-alpha*t) * np.sin(omega_d*t)
 
-    # Capacitor voltage
     v_c = V * (
         1
         - np.exp(-alpha*t) * (
@@ -68,12 +75,9 @@ if alpha < omega_0:
 
 
 elif abs(alpha - omega_0) < 1e-3:
-    # Critically damped
-
-    # Current
+    # 🟡 CRITICALLY DAMPED
     i = (V / L) * t * np.exp(-alpha*t)
 
-    # Capacitor voltage
     v_c = V * (1 - (1 + alpha*t)*np.exp(-alpha*t))
 
     response = "🟡 Critically Damped"
@@ -81,14 +85,12 @@ elif abs(alpha - omega_0) < 1e-3:
 
 
 else:
-    # Overdamped
+    # 🔴 OVERDAMPED
     s1 = -alpha + np.sqrt(alpha**2 - omega_0**2)
     s2 = -alpha - np.sqrt(alpha**2 - omega_0**2)
 
-    # Current
     i = (V / L) * (np.exp(s1*t) - np.exp(s2*t)) / (s1 - s2)
 
-    # Capacitor voltage
     v_c = V * (
         1 - ((s2*np.exp(s1*t) - s1*np.exp(s2*t)) / (s2 - s1))
     )
