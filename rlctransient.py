@@ -82,32 +82,49 @@ col3.markdown(f"<h3 style='color:{color_resp}'>{response}</h3>", unsafe_allow_ht
 
 
 # --- CIRCUIT DIAGRAM ---
-st.subheader("🔌 RLC Series Circuit")
+st.subheader("🔌 RLC Circuit")
 
-def draw_circuit(V, R, L, C_m):
-    # Create figure and axis explicitly
-    fig, ax = plt.subplots(figsize=(10, 2))
-    
-    # Helper function for components to keep code clean
-    def draw_comp(x1, x2, label):
-        ax.plot([x1, x2], [0.5, 0.5], 'k-', lw=2)
-        ax.text((x1+x2)/2, 0.6, label, ha='center', fontweight='bold')
+fig_circ, ax = plt.subplots(figsize=(10, 3))
 
-    # Draw circuit components
-    draw_comp(0, 1, f"{V:.0f}V")
-    draw_comp(1, 2, f"R={R:.1f}Ω")
-    draw_comp(2, 3, f"L={L:.2f}H")
-    draw_comp(3, 4, f"C={C_m:.0f}μF")
-    
-    # Draw closing wire
-    ax.plot([4, 4, 0, 0], [0.5, 0, 0, 0.5], 'k-', lw=2)
-    
-    # Finalize axis
-    ax.axis('off')
-    return fig
+# --- WIRE START ---
+ax.plot([0, 0.5], [0.5, 0.5], linewidth=2)
 
-# Render the circuit figure
-st.pyplot(draw_circuit(V, R, L, C_micro))
+# --- SOURCE (circle) ---
+circle = plt.Circle((0.3, 0.5), 0.1, fill=False, linewidth=2)
+ax.add_patch(circle)
+ax.text(0.15, 0.75, f"{V:.0f} V", fontsize=11)
+
+# --- RESISTOR (zigzag) ---
+x = np.linspace(0.5, 1.5, 10)
+y = 0.5 + 0.1 * np.sin(10 * np.pi * (x - 0.5))
+ax.plot(x, y, linewidth=2)
+ax.text(0.9, 0.8, f"R={R:.1f}Ω")
+
+# --- INDUCTOR (coil) ---
+theta = np.linspace(0, 4*np.pi, 200)
+x_coil = 1.5 + 0.4 * theta/(4*np.pi)
+y_coil = 0.5 + 0.1 * np.sin(theta)
+ax.plot(x_coil, y_coil, linewidth=2)
+ax.text(1.8, 0.8, f"L={L:.2f}H")
+
+# --- CAPACITOR (plates) ---
+ax.plot([2.0, 2.2], [0.5, 0.5], linewidth=2)
+ax.plot([2.2, 2.2], [0.3, 0.7], linewidth=2)
+ax.plot([2.4, 2.4], [0.3, 0.7], linewidth=2)
+ax.plot([2.4, 2.6], [0.5, 0.5], linewidth=2)
+ax.text(2.1, 0.8, f"C={C_micro:.0f}μF")
+
+# --- RETURN PATH ---
+ax.plot([2.6, 2.6], [0.5, 0.1], linewidth=2)
+ax.plot([2.6, 0], [0.1, 0.1], linewidth=2)
+ax.plot([0, 0], [0.1, 0.5], linewidth=2)
+
+# --- FINAL SETTINGS ---
+ax.set_xlim(-0.2, 3)
+ax.set_ylim(0, 1)
+ax.axis('off')
+
+st.pyplot(fig_circ, clear_figure=True)
 
 # =====================================
 # 📈 CURRENT RESPONSE
