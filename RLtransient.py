@@ -21,25 +21,62 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ================= CACHED CIRCUIT DRAWING =================
-@st.cache_resource
-def draw_circuit(mode, R, L):
-    d = schemdraw.Drawing(show=False)
-    if mode == "Growth (Switch ON)":
-        d += elm.SourceV().up().label("V")
-        d += elm.Switch(action='close').right().label("S")
-        d += elm.Resistor().right().label(f"R={R}Ω")
-        d += elm.Inductor().right().label(f"L={L}H")
-        d += elm.Line().down()
-        d += elm.Line().left().at(d.here).to((0,0))
+# ================= RL CIRCUIT =================
+# active_path = "growth"  -> Supply connected (current growth)
+# active_path = "decay"   -> Supply disconnected, RL discharge loop
+
+def draw_circuit(active_path="growth"):
+    import schemdraw
+    import schemdraw.elements as elm
+
+    d = schemdraw.Drawing(unit=1.2)
+
+    # ---------------- BATTERY ----------------
+    d += elm.SourceV().up().label("V")
+
+    # ---------------- TOP NODE ----------------
+    d += elm.Line().right()
+    d += elm.Dot()
+
+    # ---------------- MAIN SWITCH ----------------
+    if active_path == "growth":
+        sw = elm.Switch(action='close').right().label("Close")
     else:
-        d += elm.Switch(action='open').right().label("S")
-        d += elm.Resistor().right().label(f"R={R}Ω")
-        d += elm.Inductor().right().label(f"L={L}H")
-        d += elm.Line().down()
-        d += elm.Line().left().left()
-        d += elm.Line().up()
-        d += elm.Arrow().right().at((1.8, -1)).label("Discharge", loc="bottom")
-    return d.get_imagedata("svg").decode()
+        sw = elm.Switch(action='open').right().label("Open")
+
+    d += sw
+
+    # Save position after switch
+    d.push()
+
+    # =====================================================
+    # RL MAIN BRANCH (Used during growth and visible always)
+    # =====================================================
+    d += elm.Line().right()
+    d += elm.Resistor().down().label("R")
+    d += elm.Inductor().down().label("L")
+
+    # Bottom return to source
+    d += elm.Line().left(3.6)
+    d += elm.Line().up(1.2)
+
+    # =====================================================
+    # DECAY / DISCHARGE PATH
+    # =====================================================
+    if active_path == "decay":
+        # Return to node after main switch
+        d.pop()
+
+        # Downward branch for discharge loop
+        d += elm.Line().down(0.3)
+
+        # Secondary closed discharge switch
+        d += elm.Switch(action='close').down().label("Discharge")
+
+        # Connect to lower RL loop
+        d += elm.Line().down(0.9)
+
+    return d
 
 # ================= TITLE & SIDEBAR =================
 st.title("⚡ RL Circuit DC Transient Analysis")
