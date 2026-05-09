@@ -60,6 +60,7 @@ def draw_circuit(mode="Growth (Switch ON)", R=10, L=1):
     # RL BRANCH
     # =====================================================
     d += elm.Line().right(3)
+    d += elm.Line().down(1)
     d += elm.Resistor().down().label(f"R = {R} Ω")
     d += elm.Inductor().down().label(f"L = {L} H")
 
