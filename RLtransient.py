@@ -97,35 +97,42 @@ with col3:
     st.metric("Transient Completion (5τ)", f"{5*tau:.4f} s")
 
 # ================= RL CIRCUIT DIAGRAM =================
-# ================= RL CIRCUIT DIAGRAM (STREAMLIT CLOUD SVG FIX) =================
-# Replace the entire old circuit diagram section with this
+# ================= RL CIRCUIT DIAGRAM WITH DECAY DISCHARGE PATH =================
+# Replace your existing circuit diagram block with this
 
 st.subheader("🔌 RL Circuit Diagram")
 
 d = schemdraw.Drawing(show=False)
 
-# Source
-d += elm.SourceV().up().label("V")
-
-# Switch
 if mode == "Growth (Switch ON)":
+    # ---------------- GROWTH MODE ----------------
+    d += elm.SourceV().up().label("V")
     d += elm.Switch(action='close').right().label("S")
+    d += elm.Resistor().right().label(f"R = {R} Ω")
+    d += elm.Inductor().right().label(f"L = {L} H")
+    d += elm.Line().down()
+    d += elm.Line().left().left().left()
+
 else:
+    # ---------------- DECAY MODE ----------------
+    # Battery disconnected, RL closed loop discharge path
     d += elm.Switch(action='open').right().label("S")
+    d += elm.Resistor().right().label(f"R = {R} Ω")
+    d += elm.Inductor().right().label(f"L = {L} H")
+    d += elm.Line().down()
+    d += elm.Line().left().left()
 
-# Components
-d += elm.Resistor().right().label(f"R = {R} Ω")
-d += elm.Inductor().right().label(f"L = {L} H")
+    # Complete decay loop
+    d += elm.Line().left().up()
 
-# Return path
-d += elm.Line().down()
-d += elm.Line().left().left().left()
+    # Current arrow in decay loop
+    d += elm.Arrow().right().at((1.8, -1)).label("Discharge Current", loc="bottom")
 
-# Get SVG text safely
+# Get SVG safely
 svg_data = d.get_imagedata("svg").decode()
 
-# Render directly in Streamlit
-st.components.v1.html(svg_data, height=300, scrolling=False)
+# Display
+st.components.v1.html(svg_data, height=350, scrolling=False)
 # ================= THEORY =================
 st.subheader("📘 Governing Equations")
 
