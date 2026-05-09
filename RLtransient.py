@@ -21,7 +21,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ================= CACHED CIRCUIT DRAWING =================
-# ================= RL CIRCUIT (FIXED FUNCTION SIGNATURE) =================
+
 # Use:
 # svg = draw_circuit(mode, R, L)
 
@@ -59,7 +59,7 @@ def draw_circuit(mode="Growth (Switch ON)", R=10, L=1):
     # =====================================================
     # RL BRANCH
     # =====================================================
-    d += elm.Line().right()
+    d += elm.Line(2).right()
     d += elm.Resistor().down().label(f"R = {R} Ω")
     d += elm.Inductor().down().label(f"L = {L} H")
 
