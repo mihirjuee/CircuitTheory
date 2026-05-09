@@ -97,15 +97,17 @@ with col3:
     st.metric("Transient Completion (5τ)", f"{5*tau:.4f} s")
 
 # ================= RL CIRCUIT DIAGRAM =================
+
+
 st.subheader("🔌 RL Circuit Diagram")
 
-d = schemdraw.Drawing()
+d = schemdraw.Drawing(show=False)
 
 if mode == "Growth (Switch ON)":
     d += elm.SourceV().up().label("V")
     d += elm.Switch(action='close').right().label("S")
 else:
-    d += elm.Line().up()
+    d += elm.SourceV().up().label("V")
     d += elm.Switch(action='open').right().label("S")
 
 d += elm.Resistor().right().label(f"R = {R} Ω")
@@ -113,10 +115,10 @@ d += elm.Inductor().right().label(f"L = {L} H")
 d += elm.Line().down()
 d += elm.Line().left().left().left()
 
-# Save drawing to buffer
-buf = BytesIO()
-d.save(buf, fmt="png")
-st.image(buf)
+# Streamlit-compatible rendering
+svg_data = d.get_imagedata('svg')
+
+st.image(svg_data)
 
 # ================= THEORY =================
 st.subheader("📘 Governing Equations")
