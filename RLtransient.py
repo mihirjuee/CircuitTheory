@@ -7,7 +7,7 @@ import schemdraw.elements as elm
 # ================= PAGE CONFIG =================
 st.set_page_config(
     page_title="RL Circuit DC Transient Visualizer",
-    page_icon="⚡",
+    page_icon="logo.png",
     layout="wide"
 )
 
