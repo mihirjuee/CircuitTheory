@@ -40,7 +40,7 @@ def draw_circuit(mode="Growth (Switch ON)", R=10, L=1):
     # SOURCE
     # =====================================================
     d += elm.SourceV().up().label("V")
-
+    d += elm.Line().up(1)
     # Top node
     d += elm.Line().right()
     d += elm.Dot()
@@ -63,7 +63,7 @@ def draw_circuit(mode="Growth (Switch ON)", R=10, L=1):
     d += elm.Line().down(1)
     d += elm.Resistor().down().label(f"R = {R} Ω")
     d += elm.Inductor().down().label(f"L = {L} H")
-
+    d += elm.Line().down(1)
     # Bottom return
     d += elm.Line().left(5)
     d += elm.Line().up(1.2)
