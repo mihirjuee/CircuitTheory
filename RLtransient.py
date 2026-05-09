@@ -12,11 +12,75 @@ st.set_page_config(
 )
 
 # ================= CUSTOM CSS =================
+# ================= FULL APP SKY BLUE BACKGROUND =================
+# Add this immediately after st.set_page_config(...)
+
 st.markdown("""
 <style>
-    .main { background-color: #f5f9ff; }
-    h1, h2, h3 { text-align: center; color: #003366; }
-    [data-testid="stMetricValue"] { font-size: 28px; color: #007bff; }
+/* Main app background */
+.stApp {
+    background-color: #87CEEB;
+}
+
+/* Main content container */
+.main {
+    background-color: #87CEEB;
+}
+
+/* Block container */
+.block-container {
+    background-color: #87CEEB;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background-color: #6EC6FF;
+}
+
+/* Headers */
+h1, h2, h3, h4 {
+    color: #003366 !important;
+    font-weight: bold;
+}
+
+/* Paragraph text */
+p, label, div {
+    color: #000000 !important;
+    font-size: 16px;
+}
+
+/* Metric cards */
+div[data-testid="stMetric"] {
+    background-color: rgba(255,255,255,0.35);
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.4);
+}
+
+/* Buttons */
+.stButton>button {
+    background-color: white;
+    color: black;
+    border-radius: 8px;
+    border: none;
+}
+
+/* Slider */
+.stSlider {
+    color: black;
+}
+
+/* Tables */
+table {
+    background-color: rgba(255,255,255,0.5);
+}
+
+/* Latex equations */
+.katex {
+    color: #000080 !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
