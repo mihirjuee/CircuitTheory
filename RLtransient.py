@@ -65,8 +65,8 @@ def draw_circuit(mode="Growth (Switch ON)", R=10, L=1):
     d += elm.Inductor().down().label(f"L = {L} H")
     
     # Bottom return
-    d += elm.Line().left(5)
-    d += elm.Line().up(1.2)
+    d += elm.Line().left(5.2)
+    d += elm.Line().up(1.4)
 
     # =====================================================
     # DECAY PATH
