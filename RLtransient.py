@@ -82,7 +82,7 @@ def draw_circuit(mode="Growth (Switch ON)", R=10, L=1):
         d += elm.Switch(action='close').down().label("S2")
 
         # Connect to lower loop
-        d += elm.Line().down(1.6)
+        d += elm.Line().down(1.7)
 
     # =====================================================
     # EXPORT SVG
