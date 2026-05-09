@@ -1,21 +1,8 @@
-# rl_dc_transient_complete_app.py
-# ==========================================================
-# RL CIRCUIT DC TRANSIENT ANALYSIS APP
-# Complete with:
-# ✔ Mobile Responsive Layout
-# ✔ RL Circuit Diagram (Schemdraw)
-# ✔ Current Growth / Decay
-# ✔ Voltage Across R & L
-# ✔ Energy Storage
-# ✔ Time Constant Visualization
-# ==========================================================
-
 import streamlit as st
 import numpy as np
 import plotly.graph_objects as go
 import schemdraw
 import schemdraw.elements as elm
-from io import BytesIO
 
 # ================= PAGE CONFIG =================
 st.set_page_config(
@@ -27,46 +14,47 @@ st.set_page_config(
 # ================= CUSTOM CSS =================
 st.markdown("""
 <style>
-html, body, [class*="css"] {
-    font-family: 'Arial', sans-serif;
-}
-.main {
-    background-color: #f5f9ff;
-}
-h1, h2, h3 {
-    text-align: center;
-    color: #003366;
-}
-.block-container {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-}
-[data-testid="stMetricValue"] {
-    font-size: 28px;
-}
+    .main { background-color: #f5f9ff; }
+    h1, h2, h3 { text-align: center; color: #003366; }
+    [data-testid="stMetricValue"] { font-size: 28px; color: #007bff; }
 </style>
 """, unsafe_allow_html=True)
 
-# ================= TITLE =================
+# ================= CACHED CIRCUIT DRAWING =================
+@st.cache_resource
+def draw_circuit(mode, R, L):
+    d = schemdraw.Drawing(show=False)
+    if mode == "Growth (Switch ON)":
+        d += elm.SourceV().up().label("V")
+        d += elm.Switch(action='close').right().label("S")
+        d += elm.Resistor().right().label(f"R={R}Ω")
+        d += elm.Inductor().right().label(f"L={L}H")
+        d += elm.Line().down()
+        d += elm.Line().left().at(d.here).to((0,0))
+    else:
+        d += elm.Switch(action='open').right().label("S")
+        d += elm.Resistor().right().label(f"R={R}Ω")
+        d += elm.Inductor().right().label(f"L={L}H")
+        d += elm.Line().down()
+        d += elm.Line().left().left()
+        d += elm.Line().up()
+        d += elm.Arrow().right().at((1.8, -1)).label("Discharge", loc="bottom")
+    return d.get_imagedata("svg").decode()
+
+# ================= TITLE & SIDEBAR =================
 st.title("⚡ RL Circuit DC Transient Analysis")
-st.markdown("### Interactive Visualization of Current Growth and Decay in RL Circuit")
 
-# ================= SIDEBAR =================
 st.sidebar.header("⚙ Circuit Parameters")
-
 V = st.sidebar.slider("Supply Voltage V (Volts)", 1.0, 500.0, 100.0)
 R = st.sidebar.slider("Resistance R (Ω)", 0.1, 100.0, 10.0)
 L = st.sidebar.slider("Inductance L (H)", 0.001, 10.0, 1.0)
-
-mode = st.sidebar.radio(
-    "Select Operation Mode",
-    ["Growth (Switch ON)", "Decay (Switch OFF)"]
-)
+mode = st.sidebar.radio("Select Operation Mode", ["Growth (Switch ON)", "Decay (Switch OFF)"])
 
 # ================= CALCULATIONS =================
-tau = L / R
-I_final = V / R
-
+# Safety check to avoid division by zero
+R_safe = max(R, 1e-9)
+tau = L / R_safe
+I_final = V / R_safe
 t_max = 5 * tau
 t = np.linspace(0, t_max, 500)
 
@@ -74,206 +62,73 @@ if mode == "Growth (Switch ON)":
     i = I_final * (1 - np.exp(-t / tau))
     vL = V * np.exp(-t / tau)
     vR = V - vL
-    current_title = "Current Growth in RL Circuit"
+    target_val = I_final * 0.632
+    target_label = "63.2% (τ)"
+    current_title = "Current Growth: i(t) = I[1 - e^(-t/τ)]"
 else:
-    i0 = I_final
-    i = i0 * np.exp(-t / tau)
+    i = I_final * np.exp(-t / tau)
     vR = i * R
     vL = -vR
-    current_title = "Current Decay in RL Circuit"
+    target_val = I_final * 0.368
+    target_label = "36.8% (τ)"
+    current_title = "Current Decay: i(t) = I₀e^(-t/τ)"
 
 energy = 0.5 * L * i**2
 
 # ================= METRICS =================
-col1, col2, col3 = st.columns(3)
+m1, m2, m3 = st.columns(3)
+m1.metric("Time Constant (τ)", f"{tau:.4f} s")
+m2.metric("Steady State Current", f"{I_final:.2f} A")
+m3.metric("Settling Time (5τ)", f"{5*tau:.4f} s")
 
-with col1:
-    st.metric("Time Constant (τ=L/R)", f"{tau:.4f} s")
+# ================= VISUALS =================
+col_diag, col_theory = st.columns([1, 1])
 
-with col2:
-    st.metric("Final Current (V/R)", f"{I_final:.4f} A")
+with col_diag:
+    st.subheader("🔌 Circuit Diagram")
+    svg = draw_circuit(mode, R, L)
+    st.components.v1.html(f"<div style='display:flex;justify-content:center;'>{svg}</div>", height=250)
 
-with col3:
-    st.metric("Transient Completion (5τ)", f"{5*tau:.4f} s")
+with col_theory:
+    st.subheader("📘 Governing Equations")
+    if mode == "Growth (Switch ON)":
+        st.latex(r"i(t) = \frac{V}{R}(1 - e^{-t/\tau})")
+        st.latex(r"v_L(t) = V e^{-t/\tau}")
+    else:
+        st.latex(r"i(t) = I_0 e^{-t/\tau}")
+        st.latex(r"v_L(t) = -Ri(t)")
+    st.latex(r"\tau = \frac{L}{R}")
 
-# ================= RL CIRCUIT DIAGRAM =================
-# ================= RL CIRCUIT DIAGRAM WITH DECAY DISCHARGE PATH =================
-# Replace your existing circuit diagram block with this
+# ================= GRAPHS =================
+# Current Plot
+fig_i = go.Figure()
+fig_i.add_trace(go.Scatter(x=t, y=i, name="Current i(t)", line=dict(color='#1f77b4', width=3)))
+fig_i.add_vline(x=tau, line_dash="dash", line_color="red", annotation_text="τ")
+fig_i.add_hline(y=target_val, line_dash="dot", line_color="gray", annotation_text=target_label)
+fig_i.update_layout(title=current_title, xaxis_title="Time (s)", yaxis_title="Current (A)", height=400)
+st.plotly_chart(fig_i, use_container_width=True)
 
-st.subheader("🔌 RL Circuit Diagram")
+# Voltage & Energy Plots
+c1, c2 = st.columns(2)
 
-d = schemdraw.Drawing(show=False)
+with c1:
+    fig_v = go.Figure()
+    fig_v.add_trace(go.Scatter(x=t, y=vR, name="vR (Resistor)"))
+    fig_v.add_trace(go.Scatter(x=t, y=vL, name="vL (Inductor)"))
+    fig_v.update_layout(title="Voltage Response", xaxis_title="Time (s)", yaxis_title="Volts (V)", height=400)
+    st.plotly_chart(fig_v, use_container_width=True)
 
-if mode == "Growth (Switch ON)":
-    # ---------------- GROWTH MODE ----------------
-    d += elm.SourceV().up().label("V")
-    d += elm.Switch(action='close').right().label("S")
-    d += elm.Resistor().right().label(f"R = {R} Ω")
-    d += elm.Inductor().right().label(f"L = {L} H")
-    d += elm.Line().down()
-    d += elm.Line().left().left().left()
-
-else:
-    # ---------------- DECAY MODE ----------------
-    # Battery disconnected, RL closed loop discharge path
-    d += elm.Switch(action='open').right().label("S")
-    d += elm.Resistor().right().label(f"R = {R} Ω")
-    d += elm.Inductor().right().label(f"L = {L} H")
-    d += elm.Line().down()
-    d += elm.Line().left().left()
-
-    # Complete decay loop
-    d += elm.Line().left().up()
-
-    # Current arrow in decay loop
-    d += elm.Arrow().right().at((1.8, -1)).label("Discharge Current", loc="bottom")
-
-# Get SVG safely
-svg_data = d.get_imagedata("svg").decode()
-
-# Display
-st.components.v1.html(svg_data, height=350, scrolling=False)
-# ================= THEORY =================
-st.subheader("📘 Governing Equations")
-
-if mode == "Growth (Switch ON)":
-    st.latex(r"i(t)=\frac{V}{R}\left(1-e^{-t/\tau}\right)")
-    st.latex(r"v_L(t)=Ve^{-t/\tau}")
-    st.latex(r"v_R(t)=V(1-e^{-t/\tau})")
-else:
-    st.latex(r"i(t)=I_0e^{-t/\tau}")
-    st.latex(r"v_R(t)=Ri(t)")
-    st.latex(r"v_L(t)=-Ri(t)")
-
-st.latex(r"\tau=\frac{L}{R}")
-
-# ================= CURRENT GRAPH =================
-st.subheader("📈 Current Response")
-
-fig_current = go.Figure()
-
-fig_current.add_trace(go.Scatter(
-    x=t,
-    y=i,
-    mode='lines',
-    name='Current i(t)'
-))
-
-# Mark tau point
-tau_current = I_final * (1 - np.exp(-1)) if mode == "Growth (Switch ON)" else I_final * np.exp(-1)
-
-fig_current.add_vline(
-    x=tau,
-    line_dash="dash",
-    annotation_text="τ"
-)
-
-fig_current.update_layout(
-    title=current_title,
-    xaxis_title="Time (seconds)",
-    yaxis_title="Current (Amps)",
-    height=500
-)
-
-st.plotly_chart(fig_current, use_container_width=True)
-
-# ================= VOLTAGE GRAPH =================
-st.subheader("⚡ Voltage Across Resistor and Inductor")
-
-fig_voltage = go.Figure()
-
-fig_voltage.add_trace(go.Scatter(
-    x=t,
-    y=vR,
-    mode='lines',
-    name='Voltage Across R'
-))
-
-fig_voltage.add_trace(go.Scatter(
-    x=t,
-    y=vL,
-    mode='lines',
-    name='Voltage Across L'
-))
-
-fig_voltage.add_vline(
-    x=tau,
-    line_dash="dash",
-    annotation_text="τ"
-)
-
-fig_voltage.update_layout(
-    title="Voltage Transient Response",
-    xaxis_title="Time (seconds)",
-    yaxis_title="Voltage (Volts)",
-    height=500
-)
-
-st.plotly_chart(fig_voltage, use_container_width=True)
-
-# ================= ENERGY GRAPH =================
-st.subheader("⚙ Energy Stored in Inductor")
-
-fig_energy = go.Figure()
-
-fig_energy.add_trace(go.Scatter(
-    x=t,
-    y=energy,
-    mode='lines',
-    name='Energy Stored'
-))
-
-fig_energy.update_layout(
-    title="Magnetic Energy Storage",
-    xaxis_title="Time (seconds)",
-    yaxis_title="Energy (Joules)",
-    height=500
-)
-
-st.plotly_chart(fig_energy, use_container_width=True)
-
-# ================= TRANSIENT STAGES =================
-st.subheader("🧠 RL Transient Stages")
-
-st.markdown("""
-### During Switching ON:
-- Current starts from **0 A**
-- Inductor opposes sudden rise
-- Current reaches **63.2%** at **t = τ**
-- Current reaches steady state at **5τ**
-
-### During Switching OFF:
-- Current decays exponentially
-- Inductor releases stored magnetic energy
-- Opposes sudden drop
-- Current approaches zero after **5τ**
-""")
-
-# ================= TIME CONSTANT TABLE =================
-st.subheader("📊 Time Constant Summary")
-
-percentages = {
-    "1τ": "63.2%",
-    "2τ": "86.5%",
-    "3τ": "95.0%",
-    "4τ": "98.2%",
-    "5τ": "99.3%"
-}
-
-st.table(percentages)
-
-# ================= APPLICATIONS =================
-st.subheader("🏭 Applications of RL Circuits")
-
-st.markdown("""
-✔ DC Motor Starters  
-✔ Relay Coils  
-✔ Electromagnetic Systems  
-✔ Switching Circuits  
-✔ Filters  
-✔ Power Electronics  
-""")
+with c2:
+    fig_e = go.Figure()
+    fig_e.add_trace(go.Scatter(x=t, y=energy, name="Energy", fill='tozeroy', line_color='green'))
+    fig_e.update_layout(title="Stored Magnetic Energy", xaxis_title="Time (s)", yaxis_title="Joules (J)", height=400)
+    st.plotly_chart(fig_e, use_container_width=True)
 
 # ================= FOOTER =================
 st.markdown("---")
-st.markdown("### Developed for Electrical Engineering Visualization ⚡")
+st.markdown("### 📊 Quick Reference")
+st.table({
+    "Time": ["1τ", "2τ", "3τ", "4τ", "5τ"],
+    "Growth %": ["63.2%", "86.5%", "95.0%", "98.2%", "99.3%"],
+    "Decay %": ["36.8%", "13.5%", "5.0%", "1.8%", "0.7%"]
+})
