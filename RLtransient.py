@@ -65,8 +65,8 @@ def draw_circuit(mode="Growth (Switch ON)", R=10, L=1):
     d += elm.Inductor().down().label(f"L = {L} H")
     
     # Bottom return
-    d += elm.Line().left(5.2)
-    d += elm.Line().up(1.4)
+    d += elm.Line().left(5.4)
+    d += elm.Line().up(1.6)
 
     # =====================================================
     # DECAY PATH
@@ -76,13 +76,13 @@ def draw_circuit(mode="Growth (Switch ON)", R=10, L=1):
         d.pop()
 
         # Branch downward
-        d += elm.Line().down(0.3)
+        d += elm.Line().down(0.5)
 
         # Discharge switch
         d += elm.Switch(action='close').down().label("S2")
 
         # Connect to lower loop
-        d += elm.Line().down(0.9)
+        d += elm.Line().down(1.2)
 
     # =====================================================
     # EXPORT SVG
