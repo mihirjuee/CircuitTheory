@@ -229,6 +229,53 @@ ax.axis('off')
 st.pyplot(fig_circ)
 
 # =====================================
+# 📘 IMPORTANT FORMULAS PANEL
+# =====================================
+
+st.subheader("📘 Important RLC Formulas")
+
+# --- Damping Factor ---
+st.markdown("### 🔹 Damping Factor")
+st.markdown("**α = Damping Factor**")
+st.latex(r"\alpha = \frac{R}{2L}")
+
+# --- Natural Frequency ---
+st.markdown("### 🔹 Natural Frequency")
+st.markdown("**ω₀ = Natural Frequency (rad/s)**")
+st.latex(r"\omega_0 = \frac{1}{\sqrt{LC}}")
+
+# --- Critical Resistance ---
+st.markdown("### 🔹 Critical Resistance")
+st.markdown("**R_c = Critical Resistance (Ω)**")
+st.latex(r"R_c = 2\sqrt{\frac{L}{C}}")
+
+# --- Damped Frequency ---
+st.markdown("### 🔹 Damped Frequency")
+st.markdown("**ω_d = Damped Natural Frequency (rad/s)**")
+st.latex(r"\omega_d = \sqrt{\omega_0^2 - \alpha^2}")
+
+# --- Inductor Energy ---
+st.markdown("### 🔹 Inductor Energy")
+st.markdown("**W_L = Energy Stored in Inductor (J)**")
+st.latex(r"W_L = \frac{1}{2}Li^2")
+
+# --- Capacitor Energy ---
+st.markdown("### 🔹 Capacitor Energy")
+st.markdown("**W_C = Energy Stored in Capacitor (J)**")
+st.latex(r"W_C = \frac{1}{2}Cv_c^2")
+
+# =====================================
+# 🎯 RESPONSE CONDITIONS
+# =====================================
+st.markdown("### 🎯 Response Conditions")
+
+st.markdown("""
+- 🔵 **Unstable / Sustained Oscillation:** `R ≈ 0`
+- 🟢 **Underdamped (Oscillatory):** `α < ω₀`
+- 🟡 **Critically Damped:** `R = R_c` or `α = ω₀`
+- 🔴 **Overdamped:** `α > ω₀`
+""")
+# =====================================
 # 📈 CURRENT RESPONSE
 # =====================================
 st.subheader("📈 Transient Current Response")
