@@ -240,7 +240,7 @@ W_C = 0.5 * C * v_c**2
 # =====================================
 col1, col2, col3, col4 = st.columns(4)
 
-col1.metric("Damping Factor α", f"{alpha:.3f}")
+col1.metric("Damping Rate α", f"{alpha:.3f}")
 col2.metric("Natural Frequency ω₀", f"{omega_0:.2f}")
 col3.metric("Critical Resistance", f"{R_critical:.2f} Ω")
 
