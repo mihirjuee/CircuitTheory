@@ -229,58 +229,61 @@ ax.axis('off')
 st.pyplot(fig_circ)
 
 # =====================================
-# 📘 IMPORTANT FORMULAS PANEL (TWO COLUMN)
+# 📘 IMPORTANT FORMULAS PANEL (CLEAN PREMIUM GRID)
 # =====================================
 
 st.subheader("📘 Important RLC Formulas")
 
-colf1, colf2 = st.columns(2)
+col1, col2 = st.columns(2, gap="large")
 
 # =====================================
 # LEFT COLUMN
 # =====================================
-with colf1:
-    st.markdown("### 🔹 Damping Factor")
-    st.markdown("**α = Damping Factor**")
+with col1:
+
+    st.info("**α (Damping Factor)**")
     st.latex(r"\alpha = \frac{R}{2L}")
 
-    st.markdown("### 🔹 Natural Frequency")
-    st.markdown("**ω₀ = Natural Frequency (rad/s)**")
+    st.info("**ω₀ (Natural Frequency)**")
     st.latex(r"\omega_0 = \frac{1}{\sqrt{LC}}")
 
-    st.markdown("### 🔹 Critical Resistance")
-    st.markdown("**R_c = Critical Resistance (Ω)**")
+    st.info("**R_c (Critical Resistance)**")
     st.latex(r"R_c = 2\sqrt{\frac{L}{C}}")
 
 
 # =====================================
 # RIGHT COLUMN
 # =====================================
-with colf2:
-    st.markdown("### 🔹 Damped Frequency")
-    st.markdown("**ω_d = Damped Natural Frequency (rad/s)**")
+with col2:
+
+    st.info("**ω_d (Damped Frequency)**")
     st.latex(r"\omega_d = \sqrt{\omega_0^2 - \alpha^2}")
 
-    st.markdown("### 🔹 Inductor Energy")
-    st.markdown("**W_L = Energy Stored in Inductor (J)**")
+    st.info("**W_L (Inductor Energy)**")
     st.latex(r"W_L = \frac{1}{2}Li^2")
 
-    st.markdown("### 🔹 Capacitor Energy")
-    st.markdown("**W_C = Energy Stored in Capacitor (J)**")
+    st.info("**W_C (Capacitor Energy)**")
     st.latex(r"W_C = \frac{1}{2}Cv_c^2")
 
 
 # =====================================
 # 🎯 RESPONSE CONDITIONS
 # =====================================
-st.markdown("### 🎯 Response Conditions")
+st.subheader("🎯 Response Conditions")
 
-st.markdown("""
-- 🔵 **Unstable / Sustained Oscillation:** `R ≈ 0`  
-- 🟢 **Underdamped (Oscillatory):** `α < ω₀`  
-- 🟡 **Critically Damped:** `R = R_c` or `α = ω₀`  
-- 🔴 **Overdamped:** `α > ω₀`  
-""")
+cond1, cond2, cond3, cond4 = st.columns(4)
+
+with cond1:
+    st.success("🔵 Unstable\n\nR ≈ 0")
+
+with cond2:
+    st.success("🟢 Underdamped\n\nα < ω₀")
+
+with cond3:
+    st.warning("🟡 Critical\n\nα = ω₀")
+
+with cond4:
+    st.error("🔴 Overdamped\n\nα > ω₀")
 # =====================================
 # 📈 CURRENT RESPONSE
 # =====================================
