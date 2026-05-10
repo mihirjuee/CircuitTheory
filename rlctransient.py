@@ -452,7 +452,7 @@ else:
     msg = "Overdamped → Heavy resistance suppresses oscillation."
 
 st.markdown(
-    f"<div style='color:cyan; font-size:20px; font-weight:bold'>{msg}</div>",
+    f"<div style='color:red; font-size:20px; font-weight:bold'>{msg}</div>",
     unsafe_allow_html=True
 )
 
