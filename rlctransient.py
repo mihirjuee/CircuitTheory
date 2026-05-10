@@ -334,7 +334,7 @@ col1, col2 = st.columns(2, gap="large")
 # =====================================
 with col1:
 
-    st.info("**α (Damping Factor)**")
+    st.info("**α (Damping Rate)**")
     st.latex(r"\alpha = \frac{R}{2L}")
 
     st.info("**ω₀ (Natural Frequency)**")
