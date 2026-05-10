@@ -477,4 +477,4 @@ st.markdown("""
 # 📌 FOOTER
 # =====================================
 st.markdown("---")
-st.markdown("### Built for Leran EE Interactive ⚡ | Explore • Visualize • Understand")
+st.markdown("### Built for Learn EE Interactive ⚡ | Explore • Visualize • Understand")
