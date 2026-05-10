@@ -20,65 +20,108 @@ st.set_page_config(
 # 🎨 CUSTOM STYLE
 # =====================================
 # =====================================
-# 🎨 IMPROVED FORMULA PANEL BACKGROUND
-# Add this near top of app after page config
+# 🎨 LIGHT PREMIUM SLIDER + SIDEBAR UI
+# Replace old sidebar style with this
 # =====================================
 
 st.markdown("""
 <style>
 
-/* Main App Background */
+/* =========================
+   MAIN APP BACKGROUND
+========================= */
 .stApp {
-    background: linear-gradient(to right, #dbeafe, #eff6ff, #ffffff);
+    background: linear-gradient(to right, #f8fbff, #eef4ff, #ffffff);
     color: #111827;
 }
 
-/* Headers */
+/* =========================
+   SIDEBAR LIGHT THEME
+========================= */
+section[data-testid="stSidebar"] {
+    background: linear-gradient(to bottom, #ffffff, #dbeafe);
+    border-right: 2px solid #93c5fd;
+}
+
+/* Sidebar text */
+section[data-testid="stSidebar"] h1,
+section[data-testid="stSidebar"] h2,
+section[data-testid="stSidebar"] h3,
+section[data-testid="stSidebar"] label,
+section[data-testid="stSidebar"] span,
+section[data-testid="stSidebar"] div {
+    color: #0f172a !important;
+    font-weight: 600;
+}
+
+/* =========================
+   SLIDERS
+========================= */
+
+/* Slider track */
+.stSlider > div > div > div {
+    background: #bfdbfe !important;
+}
+
+/* Slider active bar */
+.stSlider [data-baseweb="slider"] div[role="slider"] {
+    background-color: #2563eb !important;
+    border: 3px solid white !important;
+    box-shadow: 0 0 0 2px #2563eb;
+}
+
+/* Slider value bubble */
+.stSlider label {
+    color: #0f172a !important;
+    font-weight: bold;
+}
+
+/* =========================
+   TOGGLE SWITCH
+========================= */
+[data-baseweb="checkbox"] > div {
+    background-color: #93c5fd !important;
+}
+
+/* =========================
+   METRIC CARDS
+========================= */
+div[data-testid="metric-container"] {
+    background: white;
+    border: 1px solid #cbd5e1;
+    padding: 12px;
+    border-radius: 14px;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.06);
+}
+
+/* =========================
+   FORMULA / INFO CARDS
+========================= */
+div[data-testid="stAlert"] {
+    background-color: white !important;
+    color: #111827 !important;
+    border-radius: 14px !important;
+    border: 1px solid #93c5fd !important;
+}
+
+/* =========================
+   TEXT + HEADINGS
+========================= */
 h1, h2, h3, h4 {
     color: #0f172a !important;
     text-align: center;
 }
 
-/* Sidebar */
-section[data-testid="stSidebar"] {
-    background: linear-gradient(to bottom, #1e3a8a, #2563eb);
-    color: white;
+p, li {
+    color: #1e293b !important;
 }
 
-/* Formula cards */
-div[data-testid="stAlert"] {
-    background-color: #ffffff !important;
-    color: #111827 !important;
-    border: 2px solid #93c5fd !important;
-    border-radius: 12px !important;
-    box-shadow: 2px 2px 10px rgba(0,0,0,0.08);
-}
-
-/* Metric cards */
-div[data-testid="metric-container"] {
-    background-color: white;
-    border: 1px solid #bfdbfe;
-    padding: 10px;
-    border-radius: 12px;
-    box-shadow: 2px 2px 8px rgba(0,0,0,0.08);
-}
-
-/* Markdown text */
-p, li, div {
-    color: #111827 !important;
-    font-size: 17px;
-}
-
-/* Latex */
+/* =========================
+   LATEX
+========================= */
 .katex {
     color: #000000 !important;
-    font-size: 1.25rem !important;
-}
-
-/* Buttons / toggle labels */
-label, span {
-    color: #111827 !important;
-    font-weight: 600;
+    font-size: 1.2rem !important;
 }
 
 </style>
