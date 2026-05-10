@@ -19,18 +19,68 @@ st.set_page_config(
 # =====================================
 # 🎨 CUSTOM STYLE
 # =====================================
+# =====================================
+# 🎨 IMPROVED FORMULA PANEL BACKGROUND
+# Add this near top of app after page config
+# =====================================
+
 st.markdown("""
 <style>
+
+/* Main App Background */
 .stApp {
-    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-    color: white;
+    background: linear-gradient(to right, #dbeafe, #eff6ff, #ffffff);
+    color: #111827;
 }
-h1, h2, h3 {
+
+/* Headers */
+h1, h2, h3, h4 {
+    color: #0f172a !important;
     text-align: center;
 }
-div[data-testid="stMetricValue"] {
-    color: cyan;
+
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background: linear-gradient(to bottom, #1e3a8a, #2563eb);
+    color: white;
 }
+
+/* Formula cards */
+div[data-testid="stAlert"] {
+    background-color: #ffffff !important;
+    color: #111827 !important;
+    border: 2px solid #93c5fd !important;
+    border-radius: 12px !important;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.08);
+}
+
+/* Metric cards */
+div[data-testid="metric-container"] {
+    background-color: white;
+    border: 1px solid #bfdbfe;
+    padding: 10px;
+    border-radius: 12px;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Markdown text */
+p, li, div {
+    color: #111827 !important;
+    font-size: 17px;
+}
+
+/* Latex */
+.katex {
+    color: #000000 !important;
+    font-size: 1.25rem !important;
+}
+
+/* Buttons / toggle labels */
+label, span {
+    color: #111827 !important;
+    font-weight: 600;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
