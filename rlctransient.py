@@ -171,7 +171,7 @@ ax.text(0.15, 0.75, f"{V:.0f} V", fontsize=11)
 # Left vertical wire
 ax.plot([0, 0], [0.1, 0.5], linewidth=2)
 # Left horizontal wire
-ax.plot([0.1, 0.5], [0.5, 0.5], linewidth=2)
+ax.plot([0, 0.5], [0.3, 0.5], linewidth=2)
 
 # Bottom wire
 ax.plot([0, 0.3], [0.1, 0.1], linewidth=2)
